@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import Board from "./Board";
+import { updateURLParameter } from "./helpers"
 
 function App() {
-  const [initail, setInitial] = useState([
-    1, 2, 0, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-  ]);
+  const [imgUrl, setImgUrl] = useState("")
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.has("img")) {
+      setImgUrl(urlParams.get("img"))
+    }
+  }, [])
+
+  const handleImageChange = (e) => {
+    setImgUrl(e.target.value)
+    window.history.replaceState("", "", updateURLParameter(window.location.href, "img", e.target.value))
+  }
+
   return (
-    <div className='app'>
-      <div className='board'>
-        {initail.map((box, i) => (
-          <div className={box === 0 ? '' : 'tale'}>{box === 0 ? '' : box}</div>
-        ))}
-      </div>
+    <div className="App">
+      <h1>React sliding puzzle</h1>
+      <Board imgUrl={imgUrl} />
+      <input value={imgUrl} onChange={handleImageChange} />
     </div>
   );
 }
